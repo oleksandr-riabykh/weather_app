@@ -6,7 +6,6 @@ sealed class MainIntent {
     data class ForecastItemClicked(val date: String) : MainIntent()
     data class GetSelectedForecast(val date: String) : MainIntent()
     data object CloseDetails : MainIntent()
-    data object RequestLocation : MainIntent()
     data object LocationDenied : MainIntent()
     data object LocationGranted : MainIntent()
 }

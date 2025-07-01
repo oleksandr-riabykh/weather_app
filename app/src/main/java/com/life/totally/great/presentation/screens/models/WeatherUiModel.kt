@@ -1,7 +1,9 @@
 package com.life.totally.great.presentation.screens.models
 
+import androidx.compose.runtime.Immutable
 import com.life.totally.great.data.models.Coordinates
 
+@Immutable
 data class WeatherUiModel(
     val coord: Coordinates,
     val main: String,

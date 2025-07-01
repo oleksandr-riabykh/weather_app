@@ -1,11 +1,10 @@
-package com.life.totally.great.domain.usecases.search
+package com.life.totally.great.domain.usecases
 
 import app.cash.turbine.test
 import com.life.totally.great.data.exceptions.WeatherError
 import com.life.totally.great.data.models.Coordinates
 import com.life.totally.great.data.models.DataResult
 import com.life.totally.great.domain.repositories.CityRepository
-import com.life.totally.great.domain.usecases.SearchCityUseCase
 import com.life.totally.great.utils.factories.GeoLocationFactory
 import io.mockk.coEvery
 import io.mockk.mockk

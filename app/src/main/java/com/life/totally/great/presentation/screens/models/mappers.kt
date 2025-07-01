@@ -72,7 +72,7 @@ fun ForecastResponse.toUiModelList(): List<ForecastUiModel> {
         val chartData = weatherForecastMap.mapIndexed { index, item ->
             LineData(
                 yValue = item.temp.roundToLong().toFloat(),
-                xValue = ((index + 1) * 3) - 1
+                xValue = index
             )
         }
 

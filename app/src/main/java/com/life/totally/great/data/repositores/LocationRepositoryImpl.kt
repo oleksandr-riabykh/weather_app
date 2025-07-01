@@ -1,6 +1,5 @@
 package com.life.totally.great.data.repositores
 
-import android.util.Log
 import com.life.totally.great.data.exceptions.WeatherError
 import com.life.totally.great.data.models.DataResult
 import com.life.totally.great.data.persistance.LocationStoreManager
@@ -17,7 +16,6 @@ class LocationRepositoryImpl @Inject constructor(
 
     override suspend fun observeCoordinates() = dataStore.coordsFlow
         .map {
-            Log.e("Coordinates tracking", "LocationRepositoryImpl, saved coordinates: $it")
             if (it != null) DataResult.Success(it)
             else DataResult.Error(WeatherError.NoLocation("No location saved"))
         }

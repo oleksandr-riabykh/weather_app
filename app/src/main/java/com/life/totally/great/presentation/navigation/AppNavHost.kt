@@ -28,7 +28,9 @@ fun AppNavHost(
         startDestination = Screen.Main.route,
         modifier = Modifier.padding(innerPadding)
     ) {
-        composable(Screen.Main.route) {
+        composable(
+            route = Screen.Main.route
+        ) {
             WeatherScreen(vm, navController)
         }
         composable(

@@ -2,7 +2,6 @@ package com.life.totally.great.data.datasources.local.location
 
 import android.Manifest
 import android.content.Context
-import android.util.Log
 import androidx.annotation.RequiresPermission
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
@@ -28,7 +27,6 @@ class LocationUpdateWorker(
             if (loc != null) {
                 locationStoreManager.saveCoordinates(loc.latitude, loc.longitude)
             }
-            Log.e("Coordinates tracking", "LocationUpdateWorker, saved coordinates: $loc")
             Result.success()
         } catch (e: Exception) {
             Result.retry()

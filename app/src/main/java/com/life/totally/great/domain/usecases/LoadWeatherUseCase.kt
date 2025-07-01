@@ -15,7 +15,7 @@ class LoadWeatherUseCase @Inject constructor(
     private val weatherRepository: WeatherRepository,
     private val forecastRepository: ForecastRepository
 ) {
-    // can be modified later
+    // can be improved later
     suspend operator fun invoke(
         lat: Double,
         lon: Double

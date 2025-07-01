@@ -1,6 +1,5 @@
 package com.life.totally.great.domain.usecases
 
-import android.util.Log
 import com.life.totally.great.data.exceptions.WeatherError
 import com.life.totally.great.data.models.Coordinates
 import com.life.totally.great.data.models.DataResult
@@ -17,12 +16,9 @@ class LoadCurrentLocationUseCase @Inject constructor(
     private val locationScheduler: LocationUpdateScheduler
 ) {
     suspend operator fun invoke(): Flow<DataResult<Coordinates, WeatherError>> {
-        Log.e("Coordinates tracking", " locationScheduler.schedulePeriodic()")
-        locationScheduler.isTracking = true
         locationScheduler.schedulePeriodic()
-        delay(Duration.ofMillis(500L))
+        delay(Duration.ofMillis(500L)) // just to show loading state
         val observeCoordinates = repository.observeCoordinates()
-        Log.e("Coordinates tracking", " observeCoordinates, observeCoordinates coordinates: $observeCoordinates")
         return observeCoordinates
     }
 }

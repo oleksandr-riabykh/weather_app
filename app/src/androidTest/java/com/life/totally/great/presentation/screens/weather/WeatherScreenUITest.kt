@@ -11,14 +11,12 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.navigation.NavController
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.life.totally.great.data.exceptions.WeatherError
 import com.life.totally.great.data.models.Coordinates
 import com.life.totally.great.data.models.GeoLocation
-import com.life.totally.great.presentation.screens.models.ForecastUiModel
-import com.life.totally.great.presentation.screens.models.WeatherUiModel
+import com.life.totally.great.presentation.screens.base.BaseTestClass
+import com.life.totally.great.presentation.screens.models.MainUIDataModel
 import com.life.totally.great.presentation.screens.shared.MainUiState
 import com.life.totally.great.presentation.screens.shared.MainViewModel
-import com.life.totally.great.utils.factories.ForecastResponseFactory
 import com.life.totally.great.utils.factories.GeoLocationFactory
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,7 +32,7 @@ import org.mockito.MockitoAnnotations
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-class WeatherScreenUITest {
+class WeatherScreenUITest: BaseTestClass() {
 
     @get:Rule
     val composeTestRule = createComposeRule()
@@ -49,8 +47,7 @@ class WeatherScreenUITest {
     private lateinit var mockContext: Context
 
     private lateinit var searchStateFlow: MutableStateFlow<MainUiState<List<GeoLocation>>>
-    private lateinit var weatherStateFlow: MutableStateFlow<MainUiState<WeatherUiModel>>
-    private lateinit var forecastStateFlow: MutableStateFlow<MainUiState<List<ForecastUiModel>>>
+    private lateinit var weatherStateFlow: MutableStateFlow<MainUiState<MainUIDataModel>>
     private lateinit var effectFlow: MutableSharedFlow<WeatherSideEffect>
 
     private val mockTestCityName = "SearchTest"
@@ -63,10 +60,6 @@ class WeatherScreenUITest {
             lat = mockCoordinates.lat,
             lon = mockCoordinates.lon
         )
-    private val mockCities = listOf(mockCity, mockCity)
-    private val mockResponseCity = ForecastResponseFactory.createCity(name = mockResponseCityName)
-    private val mockTestForecastResponse = ForecastResponseFactory.create(city = mockResponseCity)
-    private val testError = WeatherError.Unknown(mockErrorMessage)
 
     @Before
     fun setup() {
@@ -75,13 +68,11 @@ class WeatherScreenUITest {
         // Initialize StateFlows
         searchStateFlow = MutableStateFlow(MainUiState.Idle)
         weatherStateFlow = MutableStateFlow(MainUiState.Idle)
-        forecastStateFlow = MutableStateFlow(MainUiState.Idle)
         effectFlow = MutableSharedFlow()
 
         // Mock ViewModel StateFlows
         `when`(mockMainViewModel.searchState).thenReturn(searchStateFlow.asStateFlow())
         `when`(mockMainViewModel.weatherState).thenReturn(weatherStateFlow.asStateFlow())
-        `when`(mockMainViewModel.forecastState).thenReturn(forecastStateFlow.asStateFlow())
         `when`(mockMainViewModel.effect).thenReturn(effectFlow.asSharedFlow())
     }
 

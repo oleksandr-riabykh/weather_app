@@ -52,7 +52,6 @@ class MainViewModel @Inject constructor(
             is MainIntent.SearchCity -> searchCity(intent.name)
             is MainIntent.LoadWeatherByCoordinates -> loadWeatherForCoords(intent.lat, intent.lon)
             is MainIntent.ForecastItemClicked -> clickForecastItem(intent.date)
-            is MainIntent.RequestLocation -> requestLocation()
             is MainIntent.LocationDenied -> showLocationDenied()
             is MainIntent.LocationGranted -> observeLocationChanges()
             is MainIntent.CloseDetails -> closeDetails()
@@ -74,13 +73,9 @@ class MainViewModel @Inject constructor(
 
     private fun showLocationDenied() {
         viewModelScope.launch {
-            _effect.emit(WeatherSideEffect.ShowError("Location permission denied"))
-        }
-    }
-
-    private fun requestLocation() {
-        viewModelScope.launch {
-            _effect.emit(WeatherSideEffect.RequestLocationPermission)
+            _weatherState.value = MainUiState.Error(
+                WeatherError.NoLocation("Location permission denied")
+            )
         }
     }
 
