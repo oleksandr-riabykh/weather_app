@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">WeatherApp</string>
+    <string name="location_permission">Location Permission</string>
+    <string name="this_app_needs_access_to_your_location_to_provide_local_weather_updates">This app needs access to your location to provide local weather updates.</string>
+    <string name="grant">Grant</string>
+    <string name="cancel">Cancel</string>
+    <string name="close">Close</string>
+    <string name="search">Search</string>
+    <string name="search_dots">Search…</string>
+    <string name="city_error">City error: %1$s</string>
+    <string name="weather_error">Weather error: %1$s</string>
+    <string name="forecast_error">Forecast error: %1$s</string>
+    <string name="unknown_error">Unknown Error</string>
+    <string name="location_permission_required">Location Permission Required</string>
+    <string name="location_rationale_message">
+    This app needs access to your location to show weather data for your current area.
+</string>
+    <string name="allow">Allow</string>
+</resources>
