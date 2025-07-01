@@ -2,11 +2,12 @@ package com.life.totally.great.di.domain
 
 import com.life.totally.great.domain.repositories.CityRepository
 import com.life.totally.great.domain.repositories.ForecastRepository
+import com.life.totally.great.domain.repositories.LocationRepository
 import com.life.totally.great.domain.repositories.WeatherRepository
-import com.life.totally.great.domain.usecases.forecast.LoadForecastByCityUseCase
-import com.life.totally.great.domain.usecases.weather.LoadWeatherByCityUseCase
-import com.life.totally.great.domain.usecases.weather.LoadWeatherByCoordinatesUseCase
-import com.life.totally.great.domain.usecases.search.SearchCityUseCase
+import com.life.totally.great.domain.scheduler.LocationUpdateScheduler
+import com.life.totally.great.domain.usecases.LoadCurrentLocationUseCase
+import com.life.totally.great.domain.usecases.LoadWeatherUseCase
+import com.life.totally.great.domain.usecases.SearchCityUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,14 +19,10 @@ object UseCaseModule {
     @Provides
     fun provideSearchCityUseCase(repo: CityRepository) = SearchCityUseCase(repo)
     @Provides
-    fun provideForecastByCityUseCase(city: CityRepository, forecast: ForecastRepository) =
-        LoadForecastByCityUseCase(city, forecast)
+    fun provideLoadCurrentLocationUseCase(repo: LocationRepository, scheduler: LocationUpdateScheduler) =
+        LoadCurrentLocationUseCase(repo, scheduler)
 
     @Provides
-    fun provideWeatherByCityUseCase(city: CityRepository, weather: WeatherRepository) =
-        LoadWeatherByCityUseCase(city, weather)
-
-    @Provides
-    fun provideWeatherByCoordsUseCase(weather: WeatherRepository) =
-        LoadWeatherByCoordinatesUseCase(weather)
+    fun provideLoadWeatherUseCase(weatherRepo: WeatherRepository, forecastRepo: ForecastRepository) =
+        LoadWeatherUseCase(weatherRepo, forecastRepo)
 }

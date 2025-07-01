@@ -9,6 +9,7 @@
     <string name="search_dots">Search…</string>
     <string name="city_error">City error: %1$s</string>
     <string name="weather_error">Weather error: %1$s</string>
+    <string name="location_empty_message">%1$s\nPlease, use search bar to find your location.</string>
     <string name="forecast_error">Forecast error: %1$s</string>
     <string name="unknown_error">Unknown Error</string>
     <string name="location_permission_required">Location Permission Required</string>

@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,7 +22,6 @@ import com.life.totally.great.presentation.components.widgets.ForecastHorizontal
 import com.life.totally.great.presentation.components.widgets.TemperatureLineChart
 import com.life.totally.great.presentation.screens.models.ForecastUiModel
 import com.life.totally.great.presentation.screens.shared.MainIntent
-import com.life.totally.great.presentation.screens.shared.MainSideEffect
 import com.life.totally.great.presentation.screens.shared.MainUiState
 import com.life.totally.great.presentation.screens.shared.MainViewModel
 
@@ -65,7 +62,7 @@ fun ForecastDetailContent(forecast: ForecastUiModel, onCloseClick: () -> Unit) {
 
     val weatherEntries = forecast.weatherForecastMap
 
-    CoreColumnContainer(modifier = Modifier.verticalScroll(rememberScrollState())) {
+    CoreColumnContainer {
         TitleLabel(text = forecast.date)
         Spacer(Modifier.height(16.dp))
 
@@ -90,13 +87,11 @@ fun ForecastDetailContent(forecast: ForecastUiModel, onCloseClick: () -> Unit) {
 fun ObserveForecastSideEffects(viewModel: MainViewModel, nav: NavController) {
 
     LaunchedEffect(Unit) {
-        viewModel.effect.collect { effect ->
+        viewModel.detailsEffect.collect { effect ->
             when (effect) {
-                is MainSideEffect.CloseDetails -> {
+                is DetailsSideEffect.CloseDetails -> {
                     nav.navigateUp()
                 }
-
-                else -> Unit
             }
         }
     }

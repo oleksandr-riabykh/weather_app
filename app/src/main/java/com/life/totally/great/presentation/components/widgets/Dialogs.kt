@@ -9,7 +9,7 @@ import com.life.totally.great.R
 
 @Composable
 fun LocationPermissionDialog(
-    onGrantClick: () -> Unit, onDismissClick: () -> Unit
+    onGrantClick: () -> Unit, onDismissClick: () -> Unit = {}
 ) {
     AlertDialog(
         onDismissRequest = onDismissClick,

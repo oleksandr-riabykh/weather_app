@@ -16,7 +16,6 @@ import com.life.totally.great.data.models.Coordinates
 import com.life.totally.great.data.models.GeoLocation
 import com.life.totally.great.presentation.screens.models.ForecastUiModel
 import com.life.totally.great.presentation.screens.models.WeatherUiModel
-import com.life.totally.great.presentation.screens.shared.MainSideEffect
 import com.life.totally.great.presentation.screens.shared.MainUiState
 import com.life.totally.great.presentation.screens.shared.MainViewModel
 import com.life.totally.great.utils.factories.ForecastResponseFactory
@@ -52,7 +51,7 @@ class WeatherScreenUITest {
     private lateinit var searchStateFlow: MutableStateFlow<MainUiState<List<GeoLocation>>>
     private lateinit var weatherStateFlow: MutableStateFlow<MainUiState<WeatherUiModel>>
     private lateinit var forecastStateFlow: MutableStateFlow<MainUiState<List<ForecastUiModel>>>
-    private lateinit var effectFlow: MutableSharedFlow<MainSideEffect>
+    private lateinit var effectFlow: MutableSharedFlow<WeatherSideEffect>
 
     private val mockTestCityName = "SearchTest"
     private val mockResponseCityName = "testonto"

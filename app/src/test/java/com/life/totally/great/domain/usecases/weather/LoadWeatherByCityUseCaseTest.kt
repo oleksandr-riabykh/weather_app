@@ -6,6 +6,7 @@ import com.life.totally.great.data.models.Coordinates
 import com.life.totally.great.data.models.DataResult
 import com.life.totally.great.domain.repositories.CityRepository
 import com.life.totally.great.domain.repositories.WeatherRepository
+import com.life.totally.great.domain.usecases.LoadWeatherByCityUseCase
 import com.life.totally.great.utils.factories.GeoLocationFactory
 import com.life.totally.great.utils.factories.WeatherResponseFactory
 import io.mockk.coEvery

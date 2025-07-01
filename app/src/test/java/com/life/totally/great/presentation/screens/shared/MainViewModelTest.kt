@@ -4,10 +4,11 @@ import app.cash.turbine.test
 import com.life.totally.great.data.models.DataResult
 import com.life.totally.great.domain.usecases.forecast.LoadForecastByCityUseCase
 import com.life.totally.great.domain.usecases.forecast.LoadForecastCurrentLocationUseCase
-import com.life.totally.great.domain.usecases.search.SearchCityUseCase
-import com.life.totally.great.domain.usecases.weather.LoadWeatherByCityUseCase
+import com.life.totally.great.domain.usecases.SearchCityUseCase
+import com.life.totally.great.domain.usecases.LoadWeatherByCityUseCase
 import com.life.totally.great.domain.usecases.weather.LoadWeatherByCoordinatesUseCase
-import com.life.totally.great.domain.usecases.weather.LoadWeatherCurrentLocationUseCase
+import com.life.totally.great.domain.usecases.LoadCurrentLocationUseCase
+import com.life.totally.great.presentation.screens.weather.WeatherSideEffect
 import com.life.totally.great.utils.factories.GeoLocationFactory
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -31,7 +32,7 @@ class MainViewModelTest {
     private val loadForecastUseCase = mockk<LoadForecastByCityUseCase>()
     private val loadWeatherByCityUseCase = mockk<LoadWeatherByCityUseCase>()
     private val loadWeatherByCoordsUseCase = mockk<LoadWeatherByCoordinatesUseCase>()
-    private val loadWeatherLocationUseCase = mockk<LoadWeatherCurrentLocationUseCase>()
+    private val loadWeatherLocationUseCase = mockk<LoadCurrentLocationUseCase>()
     private val loadForecastLocationUseCase = mockk<LoadForecastCurrentLocationUseCase>()
 
     private lateinit var viewModel: MainViewModel
@@ -80,7 +81,7 @@ class MainViewModelTest {
 
         viewModel.effect.test {
             val effect = awaitItem()
-            assertEquals(MainSideEffect.RequestLocationPermission, effect)
+            assertEquals(WeatherSideEffect.RequestLocationPermission, effect)
         }
     }
 
@@ -91,7 +92,7 @@ class MainViewModelTest {
 
         viewModel.effect.test {
             val effect = awaitItem()
-            assertEquals(MainSideEffect.NavigateToDetails(date), effect)
+            assertEquals(WeatherSideEffect.NavigateToDetails(date), effect)
         }
     }
 }

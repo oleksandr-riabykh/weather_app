@@ -1,9 +1,9 @@
 package com.life.totally.great.di.data
 
-import com.life.totally.great.data.datasources.local.location.LocationDataSource
 import com.life.totally.great.data.datasources.remote.city.CityRemoteDataSource
 import com.life.totally.great.data.datasources.remote.forecast.ForecastRemoteDataSource
 import com.life.totally.great.data.datasources.remote.weather.WeatherRemoteDataSource
+import com.life.totally.great.data.persistance.LocationStoreManager
 import com.life.totally.great.data.repositores.CityRepositoryImpl
 import com.life.totally.great.data.repositores.ForecastRepositoryImpl
 import com.life.totally.great.data.repositores.LocationRepositoryImpl
@@ -35,8 +35,9 @@ object RepositoryModule {
     @Singleton
     fun provideWeatherRepository(
         dataSource: WeatherRemoteDataSource,
+        datastore: LocationStoreManager,
         dispatcher: CoroutineDispatcher
-    ): WeatherRepository = WeatherRepositoryImpl(dataSource, dispatcher)
+    ): WeatherRepository = WeatherRepositoryImpl(dataSource, datastore, dispatcher)
 
     @Provides
     @Singleton
@@ -49,7 +50,7 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideLocationRepository(
-        dataSource: LocationDataSource,
+        dataSource: LocationStoreManager,
         dispatcher: CoroutineDispatcher
     ): LocationRepository = LocationRepositoryImpl(dataSource, dispatcher)
 

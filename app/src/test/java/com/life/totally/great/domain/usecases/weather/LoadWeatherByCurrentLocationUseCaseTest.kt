@@ -6,6 +6,7 @@ import com.life.totally.great.data.models.Coordinates
 import com.life.totally.great.data.models.DataResult
 import com.life.totally.great.domain.repositories.LocationRepository
 import com.life.totally.great.domain.repositories.WeatherRepository
+import com.life.totally.great.domain.usecases.LoadCurrentLocationUseCase
 import com.life.totally.great.utils.factories.WeatherResponseFactory
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -23,7 +24,7 @@ class LoadWeatherByCurrentLocationUseCaseTest {
     private val weatherRepo = mockk<WeatherRepository>()
     private val locationRepo = mockk<LocationRepository>()
 
-    private lateinit var loadWeatherCurrentLocation: LoadWeatherCurrentLocationUseCase
+    private lateinit var loadWeatherCurrentLocation: LoadCurrentLocationUseCase
 
     private val testCityName = "LoadForecastTest"
     private val testWeatherResponse = WeatherResponseFactory.create(cityName = testCityName)
@@ -33,7 +34,7 @@ class LoadWeatherByCurrentLocationUseCaseTest {
 
     @Before
     fun setup() {
-        loadWeatherCurrentLocation = LoadWeatherCurrentLocationUseCase(locationRepo, weatherRepo)
+        loadWeatherCurrentLocation = LoadCurrentLocationUseCase(locationRepo, weatherRepo)
     }
 
     @Test

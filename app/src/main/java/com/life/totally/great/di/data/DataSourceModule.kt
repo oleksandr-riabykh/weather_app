@@ -1,9 +1,6 @@
 package com.life.totally.great.di.data
 
-import android.content.Context
 import com.life.totally.great.data.api.ApiService
-import com.life.totally.great.data.datasources.local.location.LocationDataSource
-import com.life.totally.great.data.datasources.local.location.LocationDataSourceImpl
 import com.life.totally.great.data.datasources.remote.city.CityRemoteDataSource
 import com.life.totally.great.data.datasources.remote.city.CityRemoteDataSourceImpl
 import com.life.totally.great.data.datasources.remote.forecast.ForecastRemoteDataSource
@@ -13,7 +10,6 @@ import com.life.totally.great.data.datasources.remote.weather.WeatherRemoteDataS
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -38,10 +34,4 @@ object DataSourceModule {
     fun provideForecastRemoteDataSource(
         apiService: ApiService
     ): ForecastRemoteDataSource = ForecastRemoteDataSourceImpl(apiService)
-
-    @Provides
-    @Singleton
-    fun provideLocationDataSource(
-        @ApplicationContext context: Context
-    ): LocationDataSource = LocationDataSourceImpl(context)
 }

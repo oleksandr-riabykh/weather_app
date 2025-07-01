@@ -1,5 +1,6 @@
 package com.life.totally.great.presentation.components.widgets
 
+import android.Manifest
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -34,14 +36,12 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.MultiplePermissionsState
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.himanshoe.charty.line.LineChart
 import com.himanshoe.charty.line.config.LineChartConfig
 import com.himanshoe.charty.line.model.LineData
 import com.life.totally.great.R
 import com.life.totally.great.presentation.screens.models.WeatherUiModel
-import com.life.totally.great.presentation.screens.shared.MainIntent
-import com.life.totally.great.presentation.screens.shared.MainViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -49,15 +49,43 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun LocationPermissionChecker(vm: MainViewModel, locationPermission: MultiplePermissionsState) {
-    LaunchedEffect(Unit) {
-        if (!locationPermission.allPermissionsGranted) {
-            vm.processIntent(MainIntent.LocationDenied)
-        } else {
-            vm.processIntent(MainIntent.RequestLocation)
+fun LocationPermissionHandler(
+    onGranted: () -> Unit,
+    onDenied: () -> Unit
+) {
+    val multiplePermissionsState = rememberMultiplePermissionsState(
+        listOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+    )
+
+    LaunchedEffect(multiplePermissionsState.allPermissionsGranted) {
+        when {
+            multiplePermissionsState.allPermissionsGranted -> onGranted()
+            multiplePermissionsState.shouldShowRationale || !multiplePermissionsState.allPermissionsGranted -> onDenied()
+        }
+    }
+
+    when {
+        multiplePermissionsState.allPermissionsGranted -> {
+            onGranted()
+        }
+
+        multiplePermissionsState.shouldShowRationale -> {
+            LocationRationaleDialog(
+                onDismissRequest = {
+                }, onConfirm = {
+                    multiplePermissionsState.launchMultiplePermissionRequest()
+                })
+        }
+
+        else -> {
+            LaunchedEffect(Unit) { multiplePermissionsState.launchMultiplePermissionRequest() }
         }
     }
 }
+
 
 @OptIn(FlowPreview::class)
 @Composable
@@ -216,6 +244,39 @@ fun ErrorMessageCard(
                 imageVector = Icons.Default.Warning,
                 contentDescription = "Error",
                 tint = MaterialTheme.colorScheme.onErrorContainer,
+                modifier = Modifier.size(64.dp)
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                text = message,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onErrorContainer
+            )
+        }
+    }
+}
+
+@Composable
+fun InfoMessageCard(
+    message: String,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        shape = RoundedCornerShape(6.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.inverseOnSurface)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Default.Info,
+                contentDescription = "Error",
+                tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.size(64.dp)
             )
             Spacer(modifier = Modifier.width(12.dp))
