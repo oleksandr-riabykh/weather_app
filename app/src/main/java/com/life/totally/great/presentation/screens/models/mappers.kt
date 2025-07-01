@@ -5,12 +5,18 @@ import com.life.totally.great.data.models.Coordinates
 import com.life.totally.great.data.models.ForecastResponse
 import com.life.totally.great.data.models.ForecastWeatherItem
 import com.life.totally.great.data.models.WeatherResponse
+import com.life.totally.great.domain.models.WeatherDomainModel
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToLong
 
 const val DATE_FORMAT = "dd MMM yyyy"
 const val TIME_FORMAT = "HH:mm"
+
+fun WeatherDomainModel.toUiModel() = MainUIDataModel(
+    weather = currentWeather.toUiModel(),
+    forecastList = forecast.toUiModelList()
+)
 
 fun WeatherResponse.toUiModel(): WeatherUiModel {
     val weather = weather.firstOrNull()
@@ -66,7 +72,7 @@ fun ForecastResponse.toUiModelList(): List<ForecastUiModel> {
         val chartData = weatherForecastMap.mapIndexed { index, item ->
             LineData(
                 yValue = item.temp.roundToLong().toFloat(),
-                xValue = ((index + 1) * 3) - 1
+                xValue = index
             )
         }
 

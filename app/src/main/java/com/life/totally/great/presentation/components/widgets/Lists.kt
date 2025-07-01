@@ -28,7 +28,9 @@ fun ForecastHorizontalList(
         userScrollEnabled = true
     ) {
         items(weatherEntries, key = { it.datetime }) { model ->
-            WeatherCard(model)
+            WeatherCard(model,
+                modifier = Modifier
+                    .padding(vertical = 4.dp))
         }
     }
 }
@@ -47,12 +49,14 @@ fun ForecastMainList(
         userScrollEnabled = true
     ) {
         items(forecastItems, key = { it.date }) { item ->
-            val weather = item.weatherForecastMap.first()
-            ForecastItemCard(
-                date = item.date,
-                model = weather,
-                onClick = { onDateClick(item.date) }
-            )
+                item.weatherForecastMap.firstOrNull()?.let { forecastItem ->
+                ForecastItemCard(
+                    date = forecastItem.dateString?:"",
+                    model = forecastItem,
+                    onClick = { onDateClick(item.date) }
+                )
+            }
+
         }
     }
 }

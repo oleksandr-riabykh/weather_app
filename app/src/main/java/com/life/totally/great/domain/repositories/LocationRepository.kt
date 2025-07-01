@@ -6,5 +6,5 @@ import com.life.totally.great.data.models.DataResult
 import kotlinx.coroutines.flow.Flow
 
 interface LocationRepository {
-    suspend fun getCoordinatesFlow(): Flow<DataResult<Coordinates, WeatherError>>
+    suspend fun observeCoordinates(): Flow<DataResult<Coordinates, WeatherError>>
 }

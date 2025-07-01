@@ -1,4 +1,4 @@
-package com.life.totally.great.domain.usecases.search
+package com.life.totally.great.domain.usecases
 
 import app.cash.turbine.test
 import com.life.totally.great.data.exceptions.WeatherError

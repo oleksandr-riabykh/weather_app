@@ -5,22 +5,22 @@ import androidx.lifecycle.viewModelScope
 import com.life.totally.great.data.exceptions.WeatherError
 import com.life.totally.great.data.models.DataResult
 import com.life.totally.great.data.models.GeoLocation
-import com.life.totally.great.domain.usecases.forecast.LoadForecastByCityUseCase
-import com.life.totally.great.domain.usecases.forecast.LoadForecastCurrentLocationUseCase
-import com.life.totally.great.domain.usecases.search.SearchCityUseCase
-import com.life.totally.great.domain.usecases.weather.LoadWeatherByCityUseCase
-import com.life.totally.great.domain.usecases.weather.LoadWeatherByCoordinatesUseCase
-import com.life.totally.great.domain.usecases.weather.LoadWeatherCurrentLocationUseCase
+import com.life.totally.great.domain.usecases.LoadCurrentLocationUseCase
+import com.life.totally.great.domain.usecases.LoadWeatherUseCase
+import com.life.totally.great.domain.usecases.SearchCityUseCase
+import com.life.totally.great.presentation.screens.details.DetailsSideEffect
 import com.life.totally.great.presentation.screens.models.ForecastUiModel
-import com.life.totally.great.presentation.screens.models.WeatherUiModel
+import com.life.totally.great.presentation.screens.models.MainUIDataModel
 import com.life.totally.great.presentation.screens.models.toUiModel
-import com.life.totally.great.presentation.screens.models.toUiModelList
+import com.life.totally.great.presentation.screens.weather.WeatherSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,43 +28,32 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val searchCityUseCase: SearchCityUseCase,
-    private val loadForecastUseCase: LoadForecastByCityUseCase,
-    private val loadWeatherByCityUseCase: LoadWeatherByCityUseCase,
-    private val loadWeatherByCoordsUseCase: LoadWeatherByCoordinatesUseCase,
-    private val loadWeatherLocationUseCase: LoadWeatherCurrentLocationUseCase,
-    private val loadForecastLocationUseCase: LoadForecastCurrentLocationUseCase
+    private val loadWeatherUseCase: LoadWeatherUseCase,
+    private val loadLocationUseCase: LoadCurrentLocationUseCase
 ) : ViewModel() {
 
     private val _searchState = MutableStateFlow<MainUiState<List<GeoLocation>>>(MainUiState.Idle)
     val searchState: StateFlow<MainUiState<List<GeoLocation>>> = _searchState.asStateFlow()
 
-    private val _forecastState =
-        MutableStateFlow<MainUiState<List<ForecastUiModel>>>(MainUiState.Idle)
-    val forecastState: StateFlow<MainUiState<List<ForecastUiModel>>> = _forecastState.asStateFlow()
-
-    private val _weatherState = MutableStateFlow<MainUiState<WeatherUiModel>>(MainUiState.Idle)
-    val weatherState: StateFlow<MainUiState<WeatherUiModel>> = _weatherState.asStateFlow()
+    private val _weatherState = MutableStateFlow<MainUiState<MainUIDataModel>>(MainUiState.Idle)
+    val weatherState: StateFlow<MainUiState<MainUIDataModel>> = _weatherState.asStateFlow()
 
     private val _detailsState = MutableStateFlow<MainUiState<ForecastUiModel>>(MainUiState.Idle)
     val detailsState: StateFlow<MainUiState<ForecastUiModel>> = _detailsState.asStateFlow()
 
-    private val _effect = MutableSharedFlow<MainSideEffect>()
+    private val _effect = MutableSharedFlow<WeatherSideEffect>()
     val effect = _effect.asSharedFlow()
+
+    private val _detailsEffect = MutableSharedFlow<DetailsSideEffect>()
+    val detailsEffect = _detailsEffect.asSharedFlow()
 
     fun processIntent(intent: MainIntent) {
         when (intent) {
             is MainIntent.SearchCity -> searchCity(intent.name)
-            is MainIntent.LoadForecastByCity -> loadForecastForCity(intent.city)
-            is MainIntent.LoadWeatherByCity -> loadWeatherForCity(intent.city)
             is MainIntent.LoadWeatherByCoordinates -> loadWeatherForCoords(intent.lat, intent.lon)
             is MainIntent.ForecastItemClicked -> clickForecastItem(intent.date)
-            is MainIntent.RequestLocation -> requestLocation()
             is MainIntent.LocationDenied -> showLocationDenied()
-            is MainIntent.LocationGranted -> {
-                loadCurrentWeatherLocationData()
-                loadCurrentForecastLocationData()
-            }
-
+            is MainIntent.LocationGranted -> observeLocationChanges()
             is MainIntent.CloseDetails -> closeDetails()
             is MainIntent.GetSelectedForecast -> selectForecast(intent.date)
         }
@@ -72,25 +61,21 @@ class MainViewModel @Inject constructor(
 
     private fun closeDetails() {
         viewModelScope.launch {
-            _effect.emit(MainSideEffect.CloseDetails)
+            _detailsEffect.emit(DetailsSideEffect.CloseDetails)
         }
     }
 
     private fun clickForecastItem(date: String) {
         viewModelScope.launch {
-            _effect.emit(MainSideEffect.NavigateToDetails(date))
+            _effect.emit(WeatherSideEffect.NavigateToDetails(date))
         }
     }
 
     private fun showLocationDenied() {
         viewModelScope.launch {
-            _effect.emit(MainSideEffect.RequestLocationPermission)
-        }
-    }
-
-    private fun requestLocation() {
-        viewModelScope.launch {
-            _effect.emit(MainSideEffect.RequestLocationPermission)
+            _weatherState.value = MainUiState.Error(
+                WeatherError.NoLocation("Location permission denied")
+            )
         }
     }
 
@@ -99,44 +84,36 @@ class MainViewModel @Inject constructor(
             val data = getForecastByDate(date)
             _detailsState.value =
                 if (data != null) MainUiState.Success(data) else MainUiState.Error(
-                    WeatherError.NotFound("Can't find forecast")
+                    WeatherError.NotFound("Can't find forecast") // should be localized
                 )
         }
     }
 
-    private fun loadCurrentWeatherLocationData() {
+    private fun observeLocationChanges() {
         viewModelScope.launch {
-            _searchState.value = MainUiState.Idle
-            loadWeatherLocationUseCase()
-                .collect { result ->
-                    _weatherState.value = when (result) {
-                        is DataResult.Success -> MainUiState.Success(result.data.toUiModel())
-                        is DataResult.Error -> MainUiState.Error(result.error)
-                    }
-                }
-        }
-    }
-
-    private fun loadCurrentForecastLocationData() {
-        viewModelScope.launch {
-            loadForecastLocationUseCase()
-                .collect { result ->
-                    _forecastState.value = when (result) {
+            loadLocationUseCase()
+                .onEach { result ->
+                    when (result) {
                         is DataResult.Success -> {
-                            val data = result.data.toUiModelList()
-                            MainUiState.Success(data)
+                            processIntent(
+                                MainIntent.LoadWeatherByCoordinates(
+                                    result.data.lat,
+                                    result.data.lon
+                                )
+                            )
                         }
 
-                        is DataResult.Error -> MainUiState.Error(result.error)
+                        is DataResult.Error -> _weatherState.value = MainUiState.Error(result.error)
+
                     }
                 }
+                .launchIn(viewModelScope)
         }
     }
 
     private fun searchCity(name: String) {
-        if (name.isBlank()) {
-            loadCurrentWeatherLocationData()
-            loadCurrentForecastLocationData()
+        if (name.isEmpty()) {
+            _searchState.value = MainUiState.Success(emptyList())
             return
         }
         viewModelScope.launch {
@@ -151,35 +128,9 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun loadForecastForCity(city: GeoLocation) {
-        viewModelScope.launch {
-            loadForecastUseCase(city.name)
-                .onStart { _forecastState.value = MainUiState.Loading }
-                .collect { result ->
-                    _forecastState.value = when (result) {
-                        is DataResult.Success -> MainUiState.Success(result.data.toUiModelList())
-                        is DataResult.Error -> MainUiState.Error(result.error)
-                    }
-                }
-        }
-    }
-
-    private fun loadWeatherForCity(city: GeoLocation) {
-        viewModelScope.launch {
-            loadWeatherByCityUseCase(city.name)
-                .onStart { _weatherState.value = MainUiState.Loading }
-                .collect { result ->
-                    _weatherState.value = when (result) {
-                        is DataResult.Success -> MainUiState.Success(result.data.toUiModel())
-                        is DataResult.Error -> MainUiState.Error(result.error)
-                    }
-                }
-        }
-    }
-
     private fun loadWeatherForCoords(lat: Double, lon: Double) {
         viewModelScope.launch {
-            loadWeatherByCoordsUseCase(lat, lon)
+            loadWeatherUseCase(lat, lon)
                 .onStart { _weatherState.value = MainUiState.Loading }
                 .collect { result ->
                     _weatherState.value = when (result) {
@@ -191,8 +142,8 @@ class MainViewModel @Inject constructor(
     }
 
     private fun getForecastByDate(date: String): ForecastUiModel? {
-        return (forecastState.value as? MainUiState.Success)
-            ?.data
+        return (weatherState.value as? MainUiState.Success)
+            ?.data?.forecastList
             ?.firstOrNull { it.date == date }
     }
 }
