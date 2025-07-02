@@ -226,6 +226,6 @@ SOFTWARE.
 
 **Built with ❤️ using modern Android development practices**
 
-[Report Bug](https://github.com/oleksandr-riabykh/WeatherApp/issues) • [Request Feature](https://github.com/<Your-GitHub-Username>/WeatherApp/issues) • [Documentation](https://github.com/<Your-GitHub-Username>/WeatherApp/wiki)
+[Report Bug](https://github.com/oleksandr-riabykh/weather_app?tab=readme-ov-file) • [Request Feature](https://github.com/oleksandr-riabykh/weather_app?tab=readme-ov-file) • [Documentation](https://github.com/oleksandr-riabykh/weather_app?tab=readme-ov-file)
 
 </div>
