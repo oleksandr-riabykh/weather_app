@@ -59,6 +59,7 @@ This project follows **Clean Architecture** principles with clear separation of 
 - **Android Studio**: Koala (2024.1.1) or newer
 - **Gradle**: Version 8.0+
 - **Kotlin**: Version 1.9.10+
+- **JAVA**: Version 17
 - **Android SDK**:
     - `minSdk = 26` (Android 8.0)
     - `targetSdk = 34` (Android 14)
