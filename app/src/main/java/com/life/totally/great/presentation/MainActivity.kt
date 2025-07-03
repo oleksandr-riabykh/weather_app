@@ -21,16 +21,8 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
-//                    Box(modifier = Modifier.padding(innerPadding)) {
-//                        Column(
-//                            modifier = Modifier
-//                                .fillMaxSize()
-//                                .verticalScroll(rememberScrollState())
-//                        ) {
-                            AppNavHost(innerPadding)
-                        }
-//                    }
-//                }
+                    AppNavHost(innerPadding)
+                }
             }
         }
     }
