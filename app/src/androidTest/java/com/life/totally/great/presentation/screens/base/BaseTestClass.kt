@@ -6,11 +6,11 @@ import com.life.totally.great.utils.factories.ForecastResponseFactory
 import com.life.totally.great.utils.factories.GeoLocationFactory
 
 open class BaseTestClass {
-    private val mockTestCityName = "SearchTest"
-    private val mockResponseCityName = "testonto"
-    private val mockErrorMessage = "Network error"
-    private val mockCoordinates = Coordinates(-74.0, 40.0)
-    private val mockCity =
+    val mockTestCityName = "SearchTest"
+    val mockResponseCityName = "testonto"
+    val mockErrorMessage = "Network error"
+    val mockCoordinates = Coordinates(-74.0, 40.0)
+    val mockCity =
         GeoLocationFactory.create(
             name = mockTestCityName,
             lat = mockCoordinates.lat,

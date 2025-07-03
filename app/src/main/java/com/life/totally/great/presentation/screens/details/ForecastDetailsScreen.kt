@@ -17,6 +17,7 @@ import androidx.navigation.NavController
 import com.life.totally.great.presentation.Tags.CLOSE_BUTTON
 import com.life.totally.great.presentation.Tags.FORECAST_DETAIL_SCREEN
 import com.life.totally.great.presentation.Tags.FORECAST_LIST
+import com.life.totally.great.presentation.Tags.LOADING_INDICATOR
 import com.life.totally.great.presentation.components.buttons.CloseButton
 import com.life.totally.great.presentation.components.containers.CoreColumnContainer
 import com.life.totally.great.presentation.components.text.TitleLabel
@@ -44,7 +45,7 @@ fun ForecastDetailScreen(
 
     when (val state = detailsState) {
         is MainUiState.Loading -> {
-            CircularProgressIndicator()
+            CircularProgressIndicator(modifier = Modifier.testTag(LOADING_INDICATOR))
         }
 
         is MainUiState.Success -> {

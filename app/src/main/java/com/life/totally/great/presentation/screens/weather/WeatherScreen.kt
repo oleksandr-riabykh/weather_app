@@ -15,6 +15,7 @@ import androidx.navigation.NavController
 import com.life.totally.great.R
 import com.life.totally.great.data.exceptions.WeatherError
 import com.life.totally.great.presentation.Tags.CLOSE_BUTTON
+import com.life.totally.great.presentation.Tags.LOADING_INDICATOR
 import com.life.totally.great.presentation.Tags.SEARCH_RESULTS_LIST
 import com.life.totally.great.presentation.Tags.SEARCH_VIEW
 import com.life.totally.great.presentation.components.containers.CoreColumnContainer
@@ -75,7 +76,9 @@ fun WeatherScreen(
 
         Spacer(Modifier.height(8.dp))
         when (val state = searchState) {
-            MainUiState.Loading -> CircularProgressIndicator()
+            MainUiState.Loading -> CircularProgressIndicator(modifier = Modifier.testTag(
+                LOADING_INDICATOR
+            ))
             is MainUiState.Success -> {
                 val cities = state.data
                 SearchResultsList(

@@ -2,6 +2,8 @@ package com.life.totally.great.presentation.screens.details
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -10,6 +12,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.life.totally.great.data.exceptions.WeatherError
 import com.life.totally.great.presentation.MainActivity
 import com.life.totally.great.presentation.Tags.CLOSE_BUTTON
+import com.life.totally.great.presentation.Tags.LOADING_INDICATOR
 import com.life.totally.great.presentation.screens.base.BaseTestClass
 import com.life.totally.great.presentation.screens.models.ForecastUiModel
 import com.life.totally.great.presentation.screens.models.toWeatherUiModel
@@ -31,7 +34,7 @@ import org.junit.runner.RunWith
 class ForecastDetailScreenTest: BaseTestClass() {
 
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<MainActivity>()
+    val composeTestRule = createComposeRule()
 
     private lateinit var viewModel: MainViewModel
     private lateinit var navController: NavController
@@ -51,7 +54,9 @@ class ForecastDetailScreenTest: BaseTestClass() {
 
     @Before
     fun setup() {
-        viewModel = mockk(relaxed = true)
+        viewModel = mockk<MainViewModel>(relaxed = true) {
+            every { detailsState } returns detailsStateFlow
+        }
         every { viewModel.detailsState } returns detailsStateFlow
         every { viewModel.detailsEffect } returns detailsEffectFlow.asSharedFlow()
         navController = mockk(relaxed = true)
@@ -63,7 +68,10 @@ class ForecastDetailScreenTest: BaseTestClass() {
         composeTestRule.setContent {
             ForecastDetailScreen(viewModel, "2025-07-01", navController)
         }
-        composeTestRule.onNodeWithTag(CLOSE_BUTTON).assertIsDisplayed()
+
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag(LOADING_INDICATOR).assertIsDisplayed()
     }
 
     @Test
@@ -91,7 +99,7 @@ class ForecastDetailScreenTest: BaseTestClass() {
         composeTestRule.setContent {
             ForecastDetailScreen(viewModel, "2025-07-01", navController)
         }
-        composeTestRule.onNodeWithTag("CloseButton").performClick()
+        composeTestRule.onNodeWithTag(CLOSE_BUTTON).performClick()
         verify { viewModel.processIntent(MainIntent.CloseDetails) }
     }
 }

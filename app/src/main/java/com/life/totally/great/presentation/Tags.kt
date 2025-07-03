@@ -6,4 +6,5 @@ object Tags {
     const val FORECAST_LIST = "forecast_list"
     const val FORECAST_DETAIL_SCREEN = "forecast_detail_screen"
     const val CLOSE_BUTTON = "close_button"
+    const val LOADING_INDICATOR = "loading_indicator"
 }
