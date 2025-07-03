@@ -8,7 +8,9 @@ import com.life.totally.great.data.repositores.ForecastRepositoryImpl
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -20,7 +22,8 @@ import kotlin.test.assertTrue
 class ForecastRepositoryImplTest {
 
     private val remoteDataSource: ForecastRemoteDataSource = mockk()
-    private val dispatcher = StandardTestDispatcher()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val dispatcher = UnconfinedTestDispatcher()
     private lateinit var repository: ForecastRepositoryImpl
 
     private val lat = 12.34
