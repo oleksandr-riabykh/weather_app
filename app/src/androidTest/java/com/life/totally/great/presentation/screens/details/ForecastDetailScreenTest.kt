@@ -9,6 +9,7 @@ import androidx.navigation.NavController
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.life.totally.great.data.exceptions.WeatherError
 import com.life.totally.great.presentation.MainActivity
+import com.life.totally.great.presentation.Tags.CLOSE_BUTTON
 import com.life.totally.great.presentation.screens.base.BaseTestClass
 import com.life.totally.great.presentation.screens.models.ForecastUiModel
 import com.life.totally.great.presentation.screens.models.toWeatherUiModel
@@ -62,7 +63,7 @@ class ForecastDetailScreenTest: BaseTestClass() {
         composeTestRule.setContent {
             ForecastDetailScreen(viewModel, "2025-07-01", navController)
         }
-        composeTestRule.onNodeWithTag("CloseButton").assertIsDisplayed()
+        composeTestRule.onNodeWithTag(CLOSE_BUTTON).assertIsDisplayed()
     }
 
     @Test

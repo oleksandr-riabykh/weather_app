@@ -14,6 +14,9 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.life.totally.great.presentation.Tags.CLOSE_BUTTON
+import com.life.totally.great.presentation.Tags.FORECAST_DETAIL_SCREEN
+import com.life.totally.great.presentation.Tags.FORECAST_LIST
 import com.life.totally.great.presentation.components.buttons.CloseButton
 import com.life.totally.great.presentation.components.containers.CoreColumnContainer
 import com.life.totally.great.presentation.components.text.TitleLabel
@@ -66,15 +69,18 @@ fun ForecastDetailContent(forecast: ForecastUiModel, onCloseClick: () -> Unit) {
         mutableStateOf(forecast.chartData)
     }
 
-    CoreColumnContainer {
+    CoreColumnContainer(modifier = Modifier.testTag(FORECAST_DETAIL_SCREEN)) {
         Row {
             TitleLabel(text = forecast.date)
             Spacer(Modifier.weight(1f))
-            CloseButton(onCloseClick, modifier = Modifier.testTag("CloseButton"))
+            CloseButton(onCloseClick, modifier = Modifier.testTag(CLOSE_BUTTON))
         }
 
         Spacer(Modifier.height(24.dp))
-        ForecastHorizontalList(weatherEntries = weatherEntries)
+        ForecastHorizontalList(
+            weatherEntries = weatherEntries,
+            modifier = Modifier.testTag(FORECAST_LIST)
+        )
         Spacer(modifier = Modifier.weight(1f))
         TemperatureLineChart(chartData)
     }

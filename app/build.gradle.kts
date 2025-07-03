@@ -51,6 +51,9 @@ android {
         abortOnError = false
         checkReleaseBuilds = false
     }
+    packaging {
+        resources { pickFirsts += listOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md") }
+    }
 }
 
 dependencies {

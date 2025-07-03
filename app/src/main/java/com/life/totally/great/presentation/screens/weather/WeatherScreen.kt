@@ -7,12 +7,16 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.life.totally.great.R
 import com.life.totally.great.data.exceptions.WeatherError
+import com.life.totally.great.presentation.Tags.CLOSE_BUTTON
+import com.life.totally.great.presentation.Tags.SEARCH_RESULTS_LIST
+import com.life.totally.great.presentation.Tags.SEARCH_VIEW
 import com.life.totally.great.presentation.components.containers.CoreColumnContainer
 import com.life.totally.great.presentation.components.widgets.DebugRecompose
 import com.life.totally.great.presentation.components.widgets.ErrorMessageCard
@@ -65,7 +69,8 @@ fun WeatherScreen(
         SearchView(
             onSearch = { city ->
                 mainViewModel.processIntent(MainIntent.SearchCity(city))
-            }
+            },
+            modifier = Modifier.testTag(SEARCH_VIEW)
         )
 
         Spacer(Modifier.height(8.dp))
@@ -83,6 +88,7 @@ fun WeatherScreen(
                             )
                         )
                     },
+                    modifier = Modifier.testTag(SEARCH_RESULTS_LIST)
                 )
             }
 
@@ -98,7 +104,8 @@ fun WeatherScreen(
 
             is MainUiState.Idle -> {
                 SearchResultsList(
-                    cities = listOf()
+                    cities = listOf(),
+                    modifier = Modifier.testTag(SEARCH_RESULTS_LIST)
                 )
             }
         }

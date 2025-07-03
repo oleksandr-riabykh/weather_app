@@ -1,6 +1,6 @@
 # 🌦️ WeatherApp
 
-A modern Android weather application built with **Jetpack Compose**, leveraging **Clean Architecture**, **Kotlin Coroutines**, **MVI**, and **Hilt** for scalable and maintainable code.
+A modern Android weather application built with **Jetpack Compose**, leveraging **Clean Architecture**, **Kotlin Coroutines**, **MWWM/MVI**, and **Hilt** for scalable and maintainable code.
 
 ## 📱 Features
 
@@ -13,18 +13,18 @@ A modern Android weather application built with **Jetpack Compose**, leveraging 
 
 ## 🧰 Tech Stack
 
-| **Layer** | **Technology** |
-|-----------|----------------|
-| **UI** | Jetpack Compose, Navigation Component |
-| **State Management** | MVI (Model-View-Intent) Pattern |
-| **Dependency Injection** | Hilt + Custom Dispatchers |
-| **Asynchronous Operations** | Kotlin Coroutines + Flow |
-| **Location Services** | FusedLocationProviderClient |
-| **Background Processing** | WorkManager |
-| **Data Persistence** | DataStore Preferences |
-| **Image Loading** | Coil with AsyncImage |
-| **Permissions** | Accompanist Permissions |
-| **Testing** | JUnit5, Turbine, MockK |
+| **Layer** | **Technology**                               |
+|-----------|----------------------------------------------|
+| **UI** | Jetpack Compose, Navigation Component        |
+| **State Management** | MVI (Model-View-Intent) Pattern, SideEffects |
+| **Dependency Injection** | Hilt + Custom Dispatchers                    |
+| **Asynchronous Operations** | Kotlin Coroutines + Flow                     |
+| **Location Services** | FusedLocationProviderClient                  |
+| **Background Processing** | WorkManager                                  |
+| **Data Persistence** | DataStore Preferences                        |
+| **Image Loading** | Coil with AsyncImage                         |
+| **Permissions** | Accompanist Permissions                      |
+| **Testing** | JUnit5, Turbine, MockK                       |
 
 ## 🏗️ Architecture
 
