@@ -19,7 +19,7 @@ import com.life.totally.great.presentation.Tags.LOADING_INDICATOR
 import com.life.totally.great.presentation.Tags.SEARCH_RESULTS_LIST
 import com.life.totally.great.presentation.Tags.SEARCH_VIEW
 import com.life.totally.great.presentation.components.containers.CoreColumnContainer
-import com.life.totally.great.presentation.components.widgets.DebugRecompose
+
 import com.life.totally.great.presentation.components.widgets.ErrorMessageCard
 import com.life.totally.great.presentation.components.widgets.ForecastMainList
 import com.life.totally.great.presentation.components.widgets.InfoMessageCard
@@ -149,5 +149,4 @@ fun WeatherScreen(
             else -> Unit
         }
     }
-    DebugRecompose("WeatherScreen")
 }

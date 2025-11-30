@@ -1,3 +1,6 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -23,8 +26,15 @@ android {
     buildTypes {
         release {
             //todo: api keys might be stored securely in config file, or loaded form firebase remote config
+            val localProperties = Properties()
+            val localPropertiesFile = rootProject.file("local.properties")
+            if (localPropertiesFile.exists()) {
+                localProperties.load(FileInputStream(localPropertiesFile))
+            }
+            val apiKey = localProperties.getProperty("WEATHER_API_KEY") ?: ""
+            
             buildConfigField("String", "WEATHER_API_HOST", "\"https://api.openweathermap.org/\"")
-            buildConfigField("String", "WEATHER_API_KEY", "\"d0d237645c1c1ab82724fc647d2d6d9d\"")
+            buildConfigField("String", "WEATHER_API_KEY", "\"$apiKey\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -32,8 +42,15 @@ android {
             )
         }
         debug {
+            val localProperties = Properties()
+            val localPropertiesFile = rootProject.file("local.properties")
+            if (localPropertiesFile.exists()) {
+                localProperties.load(FileInputStream(localPropertiesFile))
+            }
+            val apiKey = localProperties.getProperty("WEATHER_API_KEY") ?: ""
+
             buildConfigField("String", "WEATHER_API_HOST", "\"https://api.openweathermap.org/\"")
-            buildConfigField("String", "WEATHER_API_KEY", "\"d0d237645c1c1ab82724fc647d2d6d9d\"")
+            buildConfigField("String", "WEATHER_API_KEY", "\"$apiKey\"") //d0d237645c1c1ab82724fc647d2d6d9d
             isMinifyEnabled = false
             enableUnitTestCoverage = true
             enableAndroidTestCoverage = true

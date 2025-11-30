@@ -157,7 +157,7 @@ sealed class MainIntent {
 
 ```
 app/
-├── src/main/java/com/weatherapp/
+├── src/main/java/com/life/totally/great
 │   ├── presentation/          # UI Layer
 │   │   ├── screens/          # Compose screens
 │   │   ├── components/       # Reusable UI components

@@ -21,7 +21,7 @@ import com.life.totally.great.presentation.Tags.LOADING_INDICATOR
 import com.life.totally.great.presentation.components.buttons.CloseButton
 import com.life.totally.great.presentation.components.containers.CoreColumnContainer
 import com.life.totally.great.presentation.components.text.TitleLabel
-import com.life.totally.great.presentation.components.widgets.DebugRecompose
+
 import com.life.totally.great.presentation.components.widgets.ErrorMessageCard
 import com.life.totally.great.presentation.components.widgets.ForecastHorizontalList
 import com.life.totally.great.presentation.components.widgets.TemperatureLineChart
@@ -86,7 +86,7 @@ fun ForecastDetailContent(forecast: ForecastUiModel, onCloseClick: () -> Unit) {
         TemperatureLineChart(chartData)
     }
 
-    DebugRecompose("ForecastDetailContent")
+
 }
 
 @Composable

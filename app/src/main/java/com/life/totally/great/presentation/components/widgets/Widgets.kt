@@ -3,21 +3,27 @@ package com.life.totally.great.presentation.components.widgets
 import android.Manifest
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -33,8 +39,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
@@ -51,12 +60,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 
-@Composable
-fun DebugRecompose(tag: String) {
-    val count = remember { mutableIntStateOf(0) }
-    count.intValue++
-    Log.d("Recompose", "$tag recomposed ${count.intValue} times")
-}
+
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -138,7 +142,7 @@ fun WeatherCard(
     val timeString = remember(model.timeString) { "${model.timeString}" }
     val cityName = remember(model.cityName) { model.cityName }
     val description = remember(model.description) { model.description }
-    val temp = remember(model.temp) { "Temperature: ${model.temp}°C" }
+    val temp = remember(model.temp) { "${model.temp}°C" }
     val feelsLike = remember(model.feelsLike) { "Feels like: ${model.feelsLike}°C" }
     val tempMin = remember(model.tempMin) { "Min: ${model.tempMin}°C" }
     val tempMax = remember(model.tempMax) { "Max: ${model.tempMax}°C" }
@@ -153,48 +157,109 @@ fun WeatherCard(
     // UI
     Card(
         modifier = modifier
-            .width(dimensionResource(id = R.dimen.weather_card_width))// fixed width for performance, but we can check screen size,
-            // and use percentage from screen size for setting up card size
-            .height(dimensionResource(id = R.dimen.weather_card_height)),// fixed height for performance
-        shape = RoundedCornerShape(16.dp)
+            .width(dimensionResource(id = R.dimen.weather_card_width))
+            .height(dimensionResource(id = R.dimen.weather_card_height)),
+        shape = RoundedCornerShape(24.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        )
     ) {
-        Column(
-            modifier = modifier.padding(16.dp)
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Image(
-                    painter = rememberAsyncImagePainter(model.iconUrl),
-                    contentDescription = model.description,
-                    modifier = Modifier.size(64.dp)
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Column {
-                    Text(timeString, style = MaterialTheme.typography.titleLarge)
-                    Text(cityName, style = MaterialTheme.typography.bodyMedium)
-                    Text(
-                        text = description,
-                        style = MaterialTheme.typography.labelSmall
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.primaryContainer,
+                            MaterialTheme.colorScheme.secondaryContainer
+                        )
                     )
+                )
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(24.dp)
+                    .fillMaxSize()
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Image(
+                        painter = rememberAsyncImagePainter(model.iconUrl),
+                        contentDescription = model.description,
+                        modifier = Modifier
+                            .size(80.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.2f))
+                            .padding(8.dp)
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Column {
+                        Text(
+                            text = timeString,
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                        Text(
+                            text = cityName,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                        )
+                        Text(
+                            text = description.replaceFirstChar { if (it.isLowerCase()) it.titlecase(java.util.Locale.getDefault()) else it.toString() },
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = temp,
+                        style = MaterialTheme.typography.displayMedium,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                    Column(horizontalAlignment = Alignment.End) {
+                        Text(
+                            text = feelsLike,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                        Text(
+                            text = "$tempMin / $tempMax",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+                
+                HorizontalDivider(color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.2f))
+                
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text(humidity, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                        Text(windSpeed, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                    }
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text(pressure, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                        Text(rainOneHourVolume, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                    }
                 }
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(temp, style = MaterialTheme.typography.bodyLarge)
-            Text(feelsLike, style = MaterialTheme.typography.bodyMedium)
-            Text(
-                tempMin + tempMax,
-                style = MaterialTheme.typography.bodySmall
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(humidity)
-            Text(pressure)
-            Text(seaLevel)
-            Text(grndLevel)
-            Text(windSpeed)
-            Text(rainOneHourVolume)
         }
     }
 }
@@ -208,46 +273,84 @@ fun WeatherMiniCard(
     Card(
         modifier = modifier
             .fillMaxWidth(),
-        shape = RoundedCornerShape(6.dp)
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Column(
+        Box(
             modifier = Modifier
-                .padding(16.dp)
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                val painter = rememberAsyncImagePainter(model.iconUrl)
-                Image(
-                    painter = painter,
-                    contentDescription = model.description,
-                    modifier = Modifier.size(64.dp)
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Column {
-                    Text(text = model.cityName, style = MaterialTheme.typography.titleLarge)
-                    Text(
-                        text = "${model.main} - ${model.description}",
-                        style = MaterialTheme.typography.bodyMedium
+                .fillMaxWidth()
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.tertiaryContainer,
+                            MaterialTheme.colorScheme.surface
+                        )
                     )
-                    if (model.dateString != null && model.timeString != null) {
+                )
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    val painter = rememberAsyncImagePainter(model.iconUrl)
+                    Image(
+                        painter = painter,
+                        contentDescription = model.description,
+                        modifier = Modifier
+                            .size(64.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f))
+                            .padding(4.dp)
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Column {
                         Text(
-                            text = "${model.dateString} ${model.timeString}",
-                            style = MaterialTheme.typography.labelSmall
+                            text = model.cityName,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = "${model.main} - ${model.description.replaceFirstChar { if (it.isLowerCase()) it.titlecase(java.util.Locale.getDefault()) else it.toString() }}",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        if (model.dateString != null && model.timeString != null) {
+                            Text(
+                                text = "${model.dateString} ${model.timeString}",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "${model.temp}°C",
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Column(horizontalAlignment = Alignment.End) {
+                        Text(
+                            text = "Feels like: ${model.feelsLike}°C",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Text(
+                            text = "Min: ${model.tempMin}°C, Max: ${model.tempMax}°C",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text("Temperature: ${model.temp}°C", style = MaterialTheme.typography.bodyLarge)
-            Text("Feels like: ${model.feelsLike}°C", style = MaterialTheme.typography.bodyMedium)
-            Text(
-                "Min: ${model.tempMin}°C, Max: ${model.tempMax}°C",
-                style = MaterialTheme.typography.bodySmall
-            )
         }
     }
-    DebugRecompose("WeatherMiniCard ${model.dateString}")
 }
 
 @Composable

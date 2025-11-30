@@ -38,7 +38,7 @@ class LoadWeatherUseCase @Inject constructor(
         }
 
         if (weather != null && forecast != null) {
-            send(DataResult.Success(WeatherDomainModel(weather!!, forecast!!)))
+            send(DataResult.Success(WeatherDomainModel(weather, forecast)))
         }
     }
 }
